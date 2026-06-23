@@ -1,0 +1,40 @@
+# main.config.yaml
+
+environment:
+  python:
+    path: "/path/to/python/env"
+    load_these_libraries:
+      - "library_1"
+      - "library_2"
+      - "library_n"
+  linux:
+    path: "/path/to/linux/bin"
+    load_these_libraries:
+      - "module_1"
+      - "module_2"
+      - "module_n"
+
+tasks:
+  subtask_a:
+    script_path: "/path/to/scripts"
+    script_name: "script_a.py"
+    args_to_pass:
+      - "arg1"
+      - "arg2"
+      - "arg_n"
+      
+  subtask_b:
+    script_path: "/path/to/scripts"
+    script_name: "script_b.py"
+    args_to_pass:
+      - "arg1"
+      - "arg2"
+      - "arg_n"
+      
+  main_task:
+    script_path: "/path/to/scripts"
+    script_name: "main_script.py"
+    args_to_pass:
+      - "arg1"
+      - "arg2"
+      - "arg_n"
