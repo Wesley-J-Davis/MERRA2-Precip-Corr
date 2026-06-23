@@ -1,32 +1,38 @@
 # main.config.yaml
+
 environment:
   linux:
-    path: "/path/to/GEOSDAS/bin"
+    path: "/home/gmao_ops/GEOSadas-5_41_3/GEOSadas/Linux/bin_ops"
+    g5mod_root: "/home/dao_ops/operations/pre_proc_new/src/PrecipCorr/Linux"
+    archive_loc: "/archive/input/dao_ops"
     load_these_libraries:
-      # You can trigger your g5_modules loads here
       - "g5_modules" 
 
 tasks:
   cpcu:
-    script_path: "/path/to/GEOSDAS/bin"
+    script_path: "/home/gmao_ops/GEOSadas-5_41_3/GEOSadas/Linux/bin_ops"
     script_name: "CPCU_B_Correct.x"
     args_to_pass:
-      - "$M2PCORR_CPCU_RC"
-      - "{DATE}"  # The Python wrapper will swap this for the cycle point
+      - "/discover/nobackup/dao_ops/TEST/davis-nokeep/M2PCORR/CPCU_GEOSIT_5294.rc"
+      - "{DATE}"
       - "{DATE}"
       
   cmap:
-    script_path: "/path/to/GEOSDAS/bin"
+    script_path: "/home/gmao_ops/GEOSadas-5_41_3/GEOSadas/Linux/bin_ops"
     script_name: "CMAP_A_Correct.x"
     args_to_pass:
-      - "$M2PCORR_CMAP_RC"
-      - "{DATE}"
+      - "/discover/nobackup/dao_ops/TEST/davis-nokeep/M2PCORR/CMAP_GEOSIT_5294.rc"
+      - "{DATE}"  # Or {DATE_PLUS_1} if you decide to fix that logic from the Perl script
       - "{DATE}"
       
   merge:
-    script_path: "/path/to/GEOSDAS/bin"
+    script_path: "/home/gmao_ops/GEOSadas-5_41_3/GEOSadas/Linux/bin_ops"
     script_name: "merge_Correct.x"
+    # Passing the MRGE_DIR as an environment variable or argument if the executable expects it. 
+    # If the executable reads it from the RC file, we can inject the env var dynamically in the wrapper.
     args_to_pass:
-      - "$M2PCORR_MRGE_RC"
+      - "/discover/nobackup/dao_ops/TEST/davis-nokeep/M2PCORR/MERGE_GEOSIT_5294.rc"
       - "{DATE}"
       - "{DATE}"
+    # Example of how we store the dynamic directory for the wrapper to create before running
+    pre_run_mkdir: "/discover/nobackup/dao_ops/TEST/davis-nokeep/M2PCORR/MRGE_DIR/Y{YYYY}/M{MM}/"
