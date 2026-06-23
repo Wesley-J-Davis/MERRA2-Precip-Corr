@@ -1,0 +1,26 @@
+[scheduling]
+    [[graph]]
+        # Assuming a single run for the template, or you could use a recurrence like P1D
+        R1 = """
+            subtask_a & subtask_b => main_task
+        """
+
+[runtime]
+    [[root]] # This applies to all tasks
+        [[[environment]]]
+            ERROR_LOG_LOCATION = $CYLC_TASK_LOG_DIR
+
+    [[subtask_a]]
+        script = """
+            python3 wrapper.py $CYLC_TASK_CYCLE_POINT "subtask a" /path/to/main.config > ${CYLC_TASK_LOG_DIR}/listing.${CYLC_TASK_CYCLE_POINT}
+        """
+
+    [[subtask_b]]
+        script = """
+            python3 wrapper.py $CYLC_TASK_CYCLE_POINT "subtask b" /path/to/main.config > ${CYLC_TASK_LOG_DIR}/listing.${CYLC_TASK_CYCLE_POINT}
+        """
+
+    [[main_task]]
+         script = """
+            python3 wrapper.py $CYLC_TASK_CYCLE_POINT "main task" /path/to/main.config > ${CYLC_TASK_LOG_DIR}/listing.${CYLC_TASK_CYCLE_POINT}
+        """
