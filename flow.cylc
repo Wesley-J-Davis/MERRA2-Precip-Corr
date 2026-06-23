@@ -12,15 +12,15 @@
 
     [[subtask_a]]
         pre-script = """
-            python3 wrapper_script.py $CYLC_TASK_CYCLE_POINT "subtask a" /path/to/main.config > ${CYLC_TASK_LOG_DIR}/listing.${CYLC_TASK_CYCLE_POINT}
+            python3 modules.py $CYLC_TASK_CYCLE_POINT "subtask a" /path/to/main.config > ${CYLC_TASK_LOG_DIR}/listing.${CYLC_TASK_CYCLE_POINT}
         """
 
     [[subtask_b]]
         pre-script = """
-            python3 wrapper_script.py $CYLC_TASK_CYCLE_POINT "subtask b" /path/to/main.config > ${CYLC_TASK_LOG_DIR}/listing.${CYLC_TASK_CYCLE_POINT}
+            python3 modules.py $CYLC_TASK_CYCLE_POINT "subtask b" /path/to/main.config > ${CYLC_TASK_LOG_DIR}/listing.${CYLC_TASK_CYCLE_POINT}
         """
 
     [[main_task]]
         pre-script = """
-            python3 wrapper_script.py $CYLC_TASK_CYCLE_POINT "main task" /path/to/main.config > ${CYLC_TASK_LOG_DIR}/listing.${CYLC_TASK_CYCLE_POINT}
+            python3 modules.py $CYLC_TASK_CYCLE_POINT "main task" /path/to/main.config > ${CYLC_TASK_LOG_DIR}/listing.${CYLC_TASK_CYCLE_POINT}
         """
