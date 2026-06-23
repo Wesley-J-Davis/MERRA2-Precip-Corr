@@ -1,40 +1,32 @@
 # main.config.yaml
-
 environment:
-  python:
-    path: "/path/to/python/env"
-    load_these_libraries:
-      - "library_1"
-      - "library_2"
-      - "library_n"
   linux:
-    path: "/path/to/linux/bin"
+    path: "/path/to/GEOSDAS/bin"
     load_these_libraries:
-      - "module_1"
-      - "module_2"
-      - "module_n"
+      # You can trigger your g5_modules loads here
+      - "g5_modules" 
 
 tasks:
-  subtask_a:
-    script_path: "/path/to/scripts"
-    script_name: "script_a.py"
+  cpcu:
+    script_path: "/path/to/GEOSDAS/bin"
+    script_name: "CPCU_B_Correct.x"
     args_to_pass:
-      - "arg1"
-      - "arg2"
-      - "arg_n"
+      - "$M2PCORR_CPCU_RC"
+      - "{DATE}"  # The Python wrapper will swap this for the cycle point
+      - "{DATE}"
       
-  subtask_b:
-    script_path: "/path/to/scripts"
-    script_name: "script_b.py"
+  cmap:
+    script_path: "/path/to/GEOSDAS/bin"
+    script_name: "CMAP_A_Correct.x"
     args_to_pass:
-      - "arg1"
-      - "arg2"
-      - "arg_n"
+      - "$M2PCORR_CMAP_RC"
+      - "{DATE}"
+      - "{DATE}"
       
-  main_task:
-    script_path: "/path/to/scripts"
-    script_name: "main_script.py"
+  merge:
+    script_path: "/path/to/GEOSDAS/bin"
+    script_name: "merge_Correct.x"
     args_to_pass:
-      - "arg1"
-      - "arg2"
-      - "arg_n"
+      - "$M2PCORR_MRGE_RC"
+      - "{DATE}"
+      - "{DATE}"
