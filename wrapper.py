@@ -44,3 +44,25 @@ def main():
     except subprocess.CalledProcessError as e:
         write_to_error_log("ENV", f"libraries failed install: {e}")
         sys.exit(1)
+
+    # 4. Construct and Execute Command
+    # E.g.: /path/to/python /path/to/script/script.py arg1 arg2
+    command = [python_path, os.path.join(script_path, script_name)] + arguments
+    
+    try:
+        write_to_event_log("EXEC", f"Running command: {' '.join(command)}")
+        # Run the command and wait for it to complete
+        result = subprocess.run(command, check=True, capture_output=True, text=True)
+        write_to_event_log("SUCCESS", f"{task_name} on {date} successfully executed.")
+        
+    except subprocess.CalledProcessError as e:
+        # Retrieve the log location exported by Cylc in Section 1
+        error_log_location = os.environ.get('ERROR_LOG_LOCATION', 'UNKNOWN_DIR')
+        
+        write_to_error_log("FAIL", f"{task_name} on {date} FAILED to execute.")
+        write_to_error_log("FAIL", f"Error output: {e.stderr}")
+        write_to_error_log("FAIL", f"Check full logs for {task_name} on {date} at: {error_log_location}")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()
