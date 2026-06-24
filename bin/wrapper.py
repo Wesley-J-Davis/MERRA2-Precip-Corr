@@ -52,35 +52,41 @@ def main():
         formatted_arg = arg.format(DATE=raw_date[0:8], YYYY=yyyy, MM=mm)
         arguments.append(formatted_arg)
 
-    # 5. Construct and Execute Command
-    # We construct a bash command to source g5_modules first, just like the Perl script did.
+    # 5. Construct and Execute Command via a discrete script
     g5_modules_path = os.path.join(linux_path, "g5_modules")
-    executable = os.path.join(script_path, script_name)
+    geos_lib_path = linux_path.replace('bin_ops', 'lib')
     
-    command_str = f"source {g5_modules_path} && {executable} {' '.join(arguments)}"
+    # We write a physical script to disk to guarantee a pure csh environment
+    runner_script = f"run_{task_name}.csh"
     
+    with open(runner_script, "w") as f:
+        f.write("#!/bin/csh -f\n")
+        f.write("unlimit\n")
+        f.write("setenv OMP_NUM_THREADS 1\n")   # <--- Add this! Forces 1 thread to prevent array bounds crashes
+        f.write("setenv OMP_STACKSIZE 2048m\n")
+        f.write("source /usr/share/modules/init/csh\n")
+        f.write("module purge\n")
+        f.write(f"source {g5_modules_path}\n")
+        f.write(f"setenv LD_LIBRARY_PATH {geos_lib_path}:${{BASEDIR}}/Linux/lib:${{LD_LIBRARY_PATH}}\n")
+        f.write(f"cd {script_path}\n")
+        f.write(f"./{script_name} {' '.join(arguments)}\n") 
+
+
+    # Make the script executable
+    os.chmod(runner_script, 0o755)
+
     try:
-        write_to_event_log("EXEC", f"Running command: {command_str}")
+        write_to_event_log("EXEC", f"Running discrete script: {runner_script}")
         
-        # Run using bash to evaluate the "source" command properly
-        result = subprocess.run(['/bin/bash', '-c', command_str], 
-                                check=True, capture_output=True, text=True)
+        # Execute the physical script we just created
+        result = subprocess.run([f"./{runner_script}"], check=True)
         
-        # Log successful standard output
-        for line in result.stdout.splitlines():
-            print(f"[STDOUT] {line}")
-            
         write_to_event_log("SUCCESS", f"{task_name} on {raw_date} successfully executed.")
         
     except subprocess.CalledProcessError as e:
         error_log_location = os.environ.get('CYLC_TASK_LOG_DIR', 'UNKNOWN_DIR')
-        
-        write_to_error_log("FAIL", f"{task_name} on {raw_date} FAILED to execute.")
-        write_to_error_log("FAIL", f"Exit Code: {e.returncode}")
-        write_to_error_log("FAIL", f"Standard Error Output:\n{e.stderr}")
-        write_to_error_log("FAIL", f"Standard Out Output:\n{e.stdout}")
-        write_to_error_log("FAIL", f"Check full logs for {task_name} on {raw_date} at: {error_log_location}")
+        write_to_error_log("FAIL", f"{task_name} FAILED. Exit Code: {e.returncode}")
+        write_to_error_log("FAIL", f"Check logs at: {error_log_location}")
         sys.exit(1)
-
 if __name__ == "__main__":
     main()
