@@ -1,8 +1,11 @@
 [scheduling]
+    initial cycle point = 2026-05-30T00Z
+    final cycle point   = 2026-05-31T00Z
     [[graph]]
-        # Assuming a single run for the template, or you could use a recurrence like P1D
-        R1 = """
-            subtask_a & subtask_b => main_task
+        # R1 Assuming a single run for the template, or you could use a recurrence like P1D
+        P1D = """
+            cpcu & cmap => merge
+            merge[-P1D] => cpcu & cmap
         """
 
 [runtime]
@@ -10,17 +13,17 @@
         [[[environment]]]
             ERROR_LOG_LOCATION = $CYLC_TASK_LOG_DIR
 
-    [[subtask_a]]
+    [[cpcu]]
         script = """
-            python3 wrapper.py $CYLC_TASK_CYCLE_POINT "subtask a" /path/to/main.config > ${CYLC_TASK_LOG_DIR}/listing.${CYLC_TASK_CYCLE_POINT}
+            ssh discover32 "python3 $CYLC_WORKFLOW_RUN_DIR/bin/wrapper.py $CYLC_TASK_CYCLE_POINT 'cpcu' $CYLC_WORKFLOW_RUN_DIR/main.config.yml" > ${CYLC_TASK_LOG_DIR}/listing.${CYLC_TASK_CYCLE_POINT}
+
         """
 
-    [[subtask_b]]
+    [[cmap]]
         script = """
-            python3 wrapper.py $CYLC_TASK_CYCLE_POINT "subtask b" /path/to/main.config > ${CYLC_TASK_LOG_DIR}/listing.${CYLC_TASK_CYCLE_POINT}
-        """
+            ssh discover32 "python3 $CYLC_WORKFLOW_RUN_DIR/bin/wrapper.py $CYLC_TASK_CYCLE_POINT 'cmap' $CYLC_WORKFLOW_RUN_DIR/main.config.yml" > ${CYLC_TASK_LOG_DIR}/listing.${CYLC_TASK_CYCLE_POINT}        
+       """
 
-    [[main_task]]
-         script = """
-            python3 wrapper.py $CYLC_TASK_CYCLE_POINT "main task" /path/to/main.config > ${CYLC_TASK_LOG_DIR}/listing.${CYLC_TASK_CYCLE_POINT}
-        """
+    [[merge]]
+        script = """
+            ssh discover32 "python3 $CYLC_WORKFLOW_RUN_DIR/bin/wrapper.py $CYLC_TASK_CYCLE_POINT 'merge' $CYLC_WORKFLOW_RUN_DIR/main.config.yml" > ${CYLC_TASK_LOG_DIR}/listing.${CYLC_TASK_CYCLE_POINT}

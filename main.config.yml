@@ -1,40 +1,36 @@
 # main.config.yaml
 
 environment:
-  python:
-    path: "/path/to/python/env"
-    load_these_libraries:
-      - "library_1"
-      - "library_2"
-      - "library_n"
   linux:
-    path: "/path/to/linux/bin"
+    path: "/home/gmao_ops/GEOSadas-5_41_3/GEOSadas/Linux/bin_ops"
+    g5mod_root: "/home/dao_ops/operations/pre_proc_new/src/PrecipCorr/Linux"
+    archive_loc: "/archive/input/dao_ops"
     load_these_libraries:
-      - "module_1"
-      - "module_2"
-      - "module_n"
+      - "g5_modules" 
 
 tasks:
-  subtask_a:
-    script_path: "/path/to/scripts"
-    script_name: "script_a.py"
+  cpcu:
+    script_path: "/home/gmao_ops/GEOSadas-5_41_3/GEOSadas/Linux/bin_ops"
+    script_name: "CPCU_B_Correct.x"
     args_to_pass:
-      - "arg1"
-      - "arg2"
-      - "arg_n"
+      - "/discover/nobackup/dao_ops/TEST/davis-nokeep/M2PCORR/CPCU_GEOSIT_5294.rc"
+      - "{DATE}"
+      - "{DATE}"
       
-  subtask_b:
-    script_path: "/path/to/scripts"
-    script_name: "script_b.py"
+  cmap:
+    script_path: "/home/gmao_ops/GEOSadas-5_41_3/GEOSadas/Linux/bin_ops"
+    script_name: "CMAP_A_Correct.x"
     args_to_pass:
-      - "arg1"
-      - "arg2"
-      - "arg_n"
+      - "/discover/nobackup/dao_ops/TEST/davis-nokeep/M2PCORR/CMAP_GEOSIT_5294.rc"
+      - "{DATE}"  # Or {DATE_PLUS_1} if you decide to fix that logic from the Perl script
+      - "{DATE}"
       
-  main_task:
-    script_path: "/path/to/scripts"
-    script_name: "main_script.py"
+  merge:
+    script_path: "/home/gmao_ops/GEOSadas-5_41_3/GEOSadas/Linux/bin_ops"
+    script_name: "merge_Correct.x"
     args_to_pass:
-      - "arg1"
-      - "arg2"
-      - "arg_n"
+      - "/discover/nobackup/dao_ops/TEST/davis-nokeep/M2PCORR/MERGE_GEOSIT_5294.rc"
+      - "{DATE}"
+      - "{DATE}"
+    # Example of how we store the dynamic directory for the wrapper to create before running
+    pre_run_mkdir: "/discover/nobackup/dao_ops/TEST/davis-nokeep/M2PCORR/MRGE_DIR/Y{YYYY}/M{MM}/"
