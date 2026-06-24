@@ -16,7 +16,6 @@
     [[cpcu]]
         script = """
             ssh discover32 "python3 $CYLC_WORKFLOW_RUN_DIR/bin/wrapper.py $CYLC_TASK_CYCLE_POINT 'cpcu' $CYLC_WORKFLOW_RUN_DIR/main.config.yml" > ${CYLC_TASK_LOG_DIR}/listing.${CYLC_TASK_CYCLE_POINT}
-
         """
 
     [[cmap]]
@@ -27,3 +26,4 @@
     [[merge]]
         script = """
             ssh discover32 "python3 $CYLC_WORKFLOW_RUN_DIR/bin/wrapper.py $CYLC_TASK_CYCLE_POINT 'merge' $CYLC_WORKFLOW_RUN_DIR/main.config.yml" > ${CYLC_TASK_LOG_DIR}/listing.${CYLC_TASK_CYCLE_POINT}
+       """
