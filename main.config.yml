@@ -28,8 +28,6 @@ tasks:
   merge:
     script_path: "/home/gmao_ops/GEOSadas-5_41_3/GEOSadas/Linux/bin_ops"
     script_name: "merge_Correct.x"
-    # Passing the MRGE_DIR as an environment variable or argument if the executable expects it. 
-    # If the executable reads it from the RC file, we can inject the env var dynamically in the wrapper.
     args_to_pass:
       - "/discover/nobackup/dao_ops/TEST/davis-nokeep/M2PCORR/MERGE_GEOSIT_5294.rc"
       - "{DATE}"
